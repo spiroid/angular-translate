@@ -212,7 +212,7 @@ function $translateSanitizationProvider () {
           showNoStrategyConfiguredWarning();
         }
 
-        if (arguments.length < 3) {
+        if (typeof strategy === 'undefined') {
           strategy = currentStrategy;
         }
 

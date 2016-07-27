@@ -84,7 +84,7 @@ describe('pascalprecht.translate', function () {
       spyOn($translateSanitization, 'sanitize').and.callThrough();
 
       expect($translateDefaultInterpolation.interpolate(text, params)).toBe(sanitizedText);
-      expect($translateSanitization.sanitize).toHaveBeenCalledWith(params, 'params');
+      expect($translateSanitization.sanitize).toHaveBeenCalledWith(params, 'params', undefined);
     }));
 
     it('should sanitize the interpolation params', inject(function ($translateSanitization) {
@@ -96,7 +96,21 @@ describe('pascalprecht.translate', function () {
       $translateDefaultInterpolation.useSanitizeValueStrategy('escapeParameters');
 
       expect($translateDefaultInterpolation.interpolate(text, params)).toBe(sanitizedText);
-      expect($translateSanitization.sanitize).toHaveBeenCalledWith(params, 'params');
+      expect($translateSanitization.sanitize).toHaveBeenCalledWith(params, 'params', undefined);
+    }));
+
+    it('should not sanitize the interpolation params when a null strategy value is passed',
+       inject(function ($translateSanitization) {
+      var text = 'Foo bar {{value}}';
+      var paramValue = '<span>Test</span>';
+      var params =  { value: paramValue };
+      var unsanitizedText = 'Foo bar <span>Test</span>';
+
+      spyOn($translateSanitization, 'sanitize').and.callThrough();
+      $translateDefaultInterpolation.useSanitizeValueStrategy('escapeParameters');
+
+      expect($translateDefaultInterpolation.interpolate(text, params, null)).toBe(unsanitizedText);
+      expect($translateSanitization.sanitize).toHaveBeenCalledWith(params, 'params', null);
     }));
 
     it('should not sanitize the interpolation params (defaults)', inject(function ($translateSanitization) {
@@ -108,7 +122,7 @@ describe('pascalprecht.translate', function () {
       spyOn($translateSanitization, 'sanitize').and.callThrough();
 
       expect($translateDefaultInterpolation.interpolate(text, params)).toBe(sanitizedText);
-      expect($translateSanitization.sanitize).toHaveBeenCalledWith(interpolatedText, 'text');
+      expect($translateSanitization.sanitize).toHaveBeenCalledWith(interpolatedText, 'text', undefined);
     }));
 
     it('should sanitize the interpolation params', inject(function ($translateSanitization) {
@@ -121,7 +135,20 @@ describe('pascalprecht.translate', function () {
       $translateDefaultInterpolation.useSanitizeValueStrategy('escape');
 
       expect($translateDefaultInterpolation.interpolate(text, params)).toBe(sanitizedText);
-      expect($translateSanitization.sanitize).toHaveBeenCalledWith(interpolatedText, 'text');
+      expect($translateSanitization.sanitize).toHaveBeenCalledWith(interpolatedText, 'text', undefined);
+    }));
+
+    it('should not sanitize the interpolated text when a null strategy value is passed',
+       inject(function ($translateSanitization) {
+      var text = 'Foo <span>bar</span> {{value}}';
+      var params =  { value: 'value' };
+      var interPolatedText = 'Foo <span>bar</span> value';
+
+      spyOn($translateSanitization, 'sanitize').and.callThrough();
+      $translateDefaultInterpolation.useSanitizeValueStrategy('escape');
+
+      expect($translateDefaultInterpolation.interpolate(text, params, null)).toBe(interPolatedText);
+      expect($translateSanitization.sanitize).toHaveBeenCalledWith(interPolatedText, 'text', null);
     }));
   });
 

@@ -96,9 +96,9 @@ function $translateMessageFormatInterpolation($translateSanitization, $cacheFact
    *
    * @returns {string} interpolated string.
    */
-  $translateInterpolator.interpolate = function (string, interpolationParams) {
+  $translateInterpolator.interpolate = function (string, interpolationParams, sanitizeStrategy) {
     interpolationParams = interpolationParams || {};
-    interpolationParams = $translateSanitization.sanitize(interpolationParams, 'params');
+    interpolationParams = $translateSanitization.sanitize(interpolationParams, 'params', sanitizeStrategy);
 
     var compiledFunction = $cache.get('mf:' + string);
 
@@ -122,7 +122,7 @@ function $translateMessageFormatInterpolation($translateSanitization, $cacheFact
     }
 
     var interpolatedText = compiledFunction(interpolationParams);
-    return $translateSanitization.sanitize(interpolatedText, 'text');
+    return $translateSanitization.sanitize(interpolatedText, 'text', sanitizeStrategy);
   };
 
   return $translateInterpolator;
